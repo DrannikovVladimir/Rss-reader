@@ -17,6 +17,13 @@ module.exports = {
           loader: 'babel-loader',
         },
       },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader',
+        ],
+      },
     ],
   },
   plugins: [
@@ -25,6 +32,7 @@ module.exports = {
     }),
   ],
   devServer: {
+    contentBase: path.join(__dirname, 'dist'),
     open: true,
   },
 };

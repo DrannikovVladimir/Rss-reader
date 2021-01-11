@@ -1,9 +1,23 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Webpack Package</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <title>RSS Reader</title>
 </head>
 <body>
-  <div id="point"></div>
+  <div id="point">
+    <h1 class="display-4">RSS Reader</h1>
+    <hr class="my-4" />
+    <form class="pb-4">
+      <div class="form-group">
+        <label for="rss" class="invisible">RSS Url</label>
+        <input name='url' type="text" class="form-control" id="rss" placeholder="url rss" />
+      </div>
+      <button type="submit" class="btn btn-primary" id="button">Submit</button>
+    </form>
+    <div class="output"></div>
+  </div>
 </body>
 </html>
