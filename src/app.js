@@ -15,7 +15,7 @@ const validateUrl = (state, url) => {
     .trim()
     .required()
     .url()
-    .notOneOf(state.links)
+    .notOneOf(state.links);
 
   return schema.validate(url)
     .then(() => true)
@@ -59,7 +59,6 @@ export default () => {
     resources,
   }).then(() => {
     console.log('initialized');
-    renderContentElements(elements);
   });
 
   yup.setLocale({
@@ -122,4 +121,6 @@ export default () => {
       getData(urlRss, watched);
     });
   });
+
+  renderContentElements(elements);
 };

@@ -10,7 +10,7 @@ export default (data) => {
   const items = document.querySelectorAll('item');
   const feedsData = { title: titleFeed, description: descriptionFeed };
 
-  const postsData = [...items].map((item, index) => {
+  const postsData = [...items].map((item) => {
     const title = item.querySelector('title').textContent;
     const link = item.querySelector('link').textContent;
     const description = item.querySelector('description').textContent;

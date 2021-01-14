@@ -1,12 +1,21 @@
 import i18next from 'i18next';
 
 const renderContentElements = (elements) => {
-  elements.appName.textContent = i18next.t('appName');
-  elements.appLead.textContent = i18next.t('appLead');
-  elements.input.setAttribute('placeholder', i18next.t('rssForm.placeholder'));
-  elements.submit.textContent = i18next.t('rssForm.button');
-  elements.appExample.textContent = i18next.t('appExample');
-  elements.appCopy.textContent = i18next.t('appCopy');
+  const {
+    appName,
+    appLead,
+    input,
+    submit,
+    appExample,
+    appCopy,
+  } = elements;
+
+  appName.textContent = i18next.t('appName');
+  appLead.textContent = i18next.t('appLead');
+  input.setAttribute('placeholder', i18next.t('rssForm.placeholder'));
+  submit.textContent = i18next.t('rssForm.button');
+  appExample.textContent = i18next.t('appExample');
+  appCopy.textContent = i18next.t('appCopy');
 };
 
 const createPost = (post, index) => {
