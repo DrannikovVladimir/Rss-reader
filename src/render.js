@@ -1,11 +1,22 @@
-const createPost = (post) => {
+import i18next from 'i18next';
+
+const renderContentElements = (elements) => {
+  elements.appName.textContent = i18next.t('appName');
+  elements.appLead.textContent = i18next.t('appLead');
+  elements.input.setAttribute('placeholder', i18next.t('rssForm.placeholder'));
+  elements.submit.textContent = i18next.t('rssForm.button');
+  elements.appExample.textContent = i18next.t('appExample');
+  elements.appCopy.textContent = i18next.t('appCopy');
+};
+
+const createPost = (post, index) => {
   const {
     title,
     link,
-    id,
   } = post;
   const li = document.createElement('li');
   li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
+  const id = index + 1;
 
   const a = document.createElement('a');
   a.classList.add('font-weight-bold');
@@ -17,7 +28,7 @@ const createPost = (post) => {
   const button = document.createElement('button');
   button.classList.add('btn', 'btn-primary', 'btn-sm');
   button.type = 'button';
-  button.textContent = 'Preview';
+  button.textContent = i18next.t('rssList.button');
   button.setAttribute('data-id', id);
 
   li.append(a, button);
@@ -44,14 +55,14 @@ const renderPosts = (posts, elements) => {
   const container = elements.posts;
   container.innerHTML = '';
   const postsTitle = document.createElement('h2');
-  postsTitle.textContent = 'Posts';
+  postsTitle.textContent = i18next.t('rssList.postsTitle');
   elements.posts.appendChild(postsTitle);
 
   const postsList = document.createElement('ul');
   postsList.classList.add('list-group');
 
-  posts.forEach((post) => {
-    const postItem = createPost(post);
+  posts.forEach((post, index) => {
+    const postItem = createPost(post, index);
     postsList.appendChild(postItem);
   });
 
@@ -62,7 +73,7 @@ const renderFeeds = (feeds, elements) => {
   const container = elements.feeds;
   container.innerHTML = '';
   const feedsTitle = document.createElement('h2');
-  feedsTitle.textContent = 'Feeds';
+  feedsTitle.textContent = i18next.t('rssList.feedsTitle');
   elements.feeds.appendChild(feedsTitle);
 
   const feedsList = document.createElement('ul');
@@ -99,11 +110,12 @@ const renderSuccess = (elements) => {
   }
   const feedbackElement = document.createElement('div');
   feedbackElement.classList.add('feedback', 'text-success');
-  feedbackElement.textContent = 'Rss has been loaded';
+  feedbackElement.textContent = i18next.t('rssForm.feedback.success');
   container.appendChild(feedbackElement);
 };
 
 export {
+  renderContentElements,
   renderFeeds,
   renderPosts,
   renderError,
