@@ -18,14 +18,13 @@ const renderContentElements = (elements) => {
   appCopy.textContent = i18next.t('appCopy');
 };
 
-const createPost = (post, index) => {
+const createPost = (post, id) => {
   const {
     title,
     link,
   } = post;
   const li = document.createElement('li');
   li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
-  const id = index + 1;
 
   const a = document.createElement('a');
   a.classList.add('font-weight-bold');
@@ -61,6 +60,9 @@ const createFeed = (feed) => {
 };
 
 const renderPosts = (posts, elements) => {
+  if (posts.length === 0) {
+    return;
+  }
   const container = elements.posts;
   container.innerHTML = '';
   const postsTitle = document.createElement('h2');
@@ -70,8 +72,8 @@ const renderPosts = (posts, elements) => {
   const postsList = document.createElement('ul');
   postsList.classList.add('list-group');
 
-  posts.forEach((post, index) => {
-    const postItem = createPost(post, index);
+  posts.forEach((post) => {
+    const postItem = createPost(post);
     postsList.appendChild(postItem);
   });
 
@@ -96,37 +98,19 @@ const renderFeeds = (feeds, elements) => {
   elements.feeds.appendChild(feedsList);
 };
 
-const renderError = (error, elements) => {
-  const container = elements.form.parentNode;
-  const feedback = container.querySelector('.feedback');
-  if (feedback) {
-    feedback.remove();
-  }
-  if (!error) {
-    return;
-  }
-  const feedbackElement = document.createElement('div');
-  feedbackElement.classList.add('feedback', 'text-danger');
-  feedbackElement.textContent = error;
-  container.appendChild(feedbackElement);
-};
-
-const renderSuccess = (elements) => {
-  const container = elements.form.parentNode;
-  const feedbackOldElement = container.querySelector('.feedback');
-  if (feedbackOldElement) {
-    feedbackOldElement.remove();
-  }
-  const feedbackElement = document.createElement('div');
-  feedbackElement.classList.add('feedback', 'text-success');
-  feedbackElement.textContent = i18next.t('rssForm.feedback.success');
-  container.appendChild(feedbackElement);
+const renderFeedback = (error, elements) => {
+  const { appFeedback } = elements;
+  appFeedback.classList.remove('text-danger', 'text-success');
+  appFeedback.textContent = '';
+  const feedbackText = error || i18next.t('rssForm.feedback.success');
+  const feedbackColor = error ? 'text-danger' : 'text-success';
+  appFeedback.classList.add(feedbackColor);
+  appFeedback.textContent = feedbackText;
 };
 
 export {
   renderContentElements,
   renderFeeds,
   renderPosts,
-  renderError,
-  renderSuccess,
+  renderFeedback,
 };
