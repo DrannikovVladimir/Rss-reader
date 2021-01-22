@@ -18,29 +18,58 @@ const renderContentElements = (elements) => {
   appCopy.textContent = i18next.t('appCopy');
 };
 
-const createPost = (post, id) => {
+const updateModal = (post, elements) => {
   const {
     title,
+    description,
     link,
   } = post;
-  const li = document.createElement('li');
-  li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start');
 
+  const {
+    modalTitle,
+    modalBody,
+    modalLinkPost,
+    modalClose,
+  } = elements;
+
+  modalTitle.textContent = title;
+  modalBody.textContent = description;
+  modalLinkPost.setAttribute('href', link);
+  modalLinkPost.textContent = i18next.t('modal.link');
+  modalClose.textContent = i18next.t('modal.close');
+};
+
+const updateUiLinks = (viewedPosts, elements) => {
+  const { posts } = elements;
+  viewedPosts.forEach((viewedPost) => {
+    const currentLink = posts.querySelector(`[data-id="${viewedPost}"]`);
+    currentLink.classList.remove('font-weight-bold');
+    currentLink.classList.add('font-weight-normal');
+  });
+};
+
+const createButtonPreview = (id) => {
+  const button = document.createElement('button');
+  button.classList.add('btn', 'btn-primary', 'btn-sm', 'preview');
+  button.setAttribute('type', 'button');
+  button.setAttribute('data-toggle', 'modal');
+  button.setAttribute('data-id', id);
+  button.setAttribute('data-target', '#modal');
+  button.textContent = i18next.t('rssList.button');
+
+  return button;
+};
+
+const createPost = (title, link, id, isViewed) => {
   const a = document.createElement('a');
-  a.classList.add('font-weight-bold');
+  const fontWeigth = isViewed ? 'font-weight-normal' : 'font-weight-bold';
+  a.classList.add(fontWeigth);
   a.setAttribute('href', link);
-  a.textContent = title;
   a.setAttribute('data-id', id);
   a.setAttribute('target', '_blank');
+  a.textContent = title;
 
-  const button = document.createElement('button');
-  button.classList.add('btn', 'btn-primary', 'btn-sm');
-  button.type = 'button';
-  button.textContent = i18next.t('rssList.button');
-  button.setAttribute('data-id', id);
-
-  li.append(a, button);
-  return li;
+  return a;
 };
 
 const createFeed = (feed) => {
@@ -59,7 +88,7 @@ const createFeed = (feed) => {
   return itemFeed;
 };
 
-const renderPosts = (posts, elements) => {
+const renderPosts = (state, posts, elements) => {
   if (posts.length === 0) {
     return;
   }
@@ -73,8 +102,19 @@ const renderPosts = (posts, elements) => {
   postsList.classList.add('list-group');
 
   posts.forEach((post) => {
-    const postItem = createPost(post);
-    postsList.appendChild(postItem);
+    const li = document.createElement('li');
+    li.classList.add(
+      'list-group-item',
+      'd-flex',
+      'justify-content-between',
+      'align-items-start',
+    );
+    const { id, title, link } = post;
+    const postLink = createPost(title, link, id);
+    const buttonPreview = createButtonPreview(id);
+
+    li.append(postLink, buttonPreview);
+    postsList.appendChild(li);
   });
 
   elements.posts.appendChild(postsList);
@@ -113,4 +153,6 @@ export {
   renderFeeds,
   renderPosts,
   renderFeedback,
+  updateModal,
+  updateUiLinks,
 };

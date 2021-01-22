@@ -31,6 +31,12 @@ export default () => {
     update: {
       state: 'waiting',
     },
+    uiState: {
+      viewedPosts: [],
+      modal: {
+        currentPost: null,
+      },
+    },
   };
 
   const elements = {
@@ -44,6 +50,10 @@ export default () => {
     submit: document.querySelector('button[type="submit"]'),
     feeds: document.querySelector('.feeds'),
     posts: document.querySelector('.posts'),
+    modalTitle: document.querySelector('.modal-title'),
+    modalBody: document.querySelector('.modal-body'),
+    modalLinkPost: document.querySelector('a.full-article'),
+    modalClose: document.querySelector('button.close-btn'),
   };
 
   const watched = watchedState(state, elements);
@@ -61,7 +71,7 @@ export default () => {
         watched.update.state = 'failed';
       })
       .finally(() => {
-        setTimeout(update, 30000);
+        setTimeout(update, 5000);
         watched.update.state = 'waiting';
       });
   };
@@ -110,6 +120,18 @@ export default () => {
         .finally(() => {
           watched.rssForm.status = 'filling';
         });
+    });
+
+    elements.posts.addEventListener('click', (evt) => {
+      if (evt.target.tagName.toLowerCase() !== 'button') {
+        return;
+      }
+      const currentId = evt.target.getAttribute('data-id');
+      const currentPost = watched.posts.find((post) => post.id === currentId);
+      if (!watched.uiState.viewedPosts.includes(currentId)) {
+        watched.uiState.viewedPosts.push(currentId);
+      }
+      watched.uiState.modal.currentPost = currentPost;
     });
 
     update(watched);

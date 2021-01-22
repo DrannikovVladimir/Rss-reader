@@ -4,6 +4,8 @@ import {
   renderPosts,
   renderFeedback,
   renderContentElements,
+  updateModal,
+  updateUiLinks,
 } from './render';
 
 const formStateHandler = (state, value, elements) => {
@@ -35,6 +37,7 @@ const formStateHandler = (state, value, elements) => {
 
 export default (state, elements) => {
   const watchedState = onChange(state, (path, value) => {
+    // console.log(path, value);
     switch (path) {
       case 'rssForm.status':
         formStateHandler(state, value, elements);
@@ -43,7 +46,13 @@ export default (state, elements) => {
         renderFeeds(value, elements);
         break;
       case 'posts':
-        renderPosts(value, elements);
+        renderPosts(state, value, elements);
+        break;
+      case 'uiState.modal.currentPost':
+        updateModal(value, elements);
+        break;
+      case 'uiState.viewedPosts':
+        updateUiLinks(value, elements);
         break;
       default:
         break;
