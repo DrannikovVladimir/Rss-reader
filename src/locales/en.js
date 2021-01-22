@@ -20,5 +20,9 @@ export default {
       postsTitle: 'Posts',
       button: 'Preview',
     },
+    modal: {
+      link: 'Open',
+      close: 'Close',
+    },
   },
 };
