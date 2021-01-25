@@ -8,7 +8,7 @@ export default {
       placeholder: 'RSS link',
       button: 'Add',
       feedback: {
-        success: 'RSS has been loaded',
+        success: 'Rss has been loaded',
         double: 'This RSS already exist',
         networkError: 'Network error',
         required: 'This is required field',
