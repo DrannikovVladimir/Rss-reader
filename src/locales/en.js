@@ -9,7 +9,7 @@ export default {
       button: 'Add',
       feedback: {
         success: 'Rss has been loaded',
-        double: 'This RSS already exist',
+        double: 'This Rss already exist',
         networkError: 'Network error',
         required: 'This is required field',
         url: 'Must be valid URL',

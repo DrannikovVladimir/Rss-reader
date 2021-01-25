@@ -1,12 +1,14 @@
 import onChange from 'on-change';
-import {
+import render from './render';
+
+const {
   renderFeeds,
   renderPosts,
   renderFeedback,
   renderContentElements,
   updateModal,
   updateUiLinks,
-} from './render';
+} = render();
 
 const formStateHandler = (state, value, elements) => {
   const { rssForm: { fields: { name: { error } } } } = state;
