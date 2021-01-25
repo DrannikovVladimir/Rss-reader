@@ -6,7 +6,7 @@ export default {
     appCopy: 'Vladimir Drannikov',
     rssForm: {
       placeholder: 'RSS link',
-      button: 'Submit',
+      button: 'Add',
       feedback: {
         success: 'RSS has been loaded',
         double: 'This RSS already exist',
