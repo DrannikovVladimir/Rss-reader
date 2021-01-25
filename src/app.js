@@ -76,6 +76,49 @@ export default () => {
       });
   };
 
+  elements.form.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    const formData = new FormData(evt.target);
+    const url = formData.get('url');
+    const { feeds } = watched;
+    watched.rssForm.statu = 'filling';
+    validate(url, feeds)
+      .then(() => {
+        watched.rssForm.valid = true;
+        watched.rssForm.fields.name.error = null;
+        watched.rssForm.status = 'sending';
+        return getNewFeed(url);
+      })
+      .then((data) => {
+        const { feed, posts } = data;
+        watched.feeds.unshift(feed);
+        watched.posts.unshift(...posts);
+        watched.rssForm.status = 'finished';
+      })
+      .catch((err) => {
+        watched.rssForm.valid = false;
+        watched.rssForm.fields.name.error = err.message;
+        watched.rssForm.status = 'failed';
+      })
+      .finally(() => {
+        watched.rssForm.status = 'filling';
+      });
+  });
+
+  elements.posts.addEventListener('click', (evt) => {
+    if (evt.target.tagName.toLowerCase() !== 'button') {
+      return;
+    }
+    const currentId = evt.target.getAttribute('data-id');
+    const currentPost = watched.posts.find((post) => post.id === currentId);
+    if (!watched.uiState.viewedPosts.includes(currentId)) {
+      watched.uiState.viewedPosts.push(currentId);
+    }
+    watched.uiState.modal.currentPost = currentPost;
+  });
+
+  update(watched);
+
   i18next.init({
     lng: 'en',
     resources,
@@ -92,48 +135,5 @@ export default () => {
         url: i18next.t('rssForm.feedback.url'),
       },
     });
-
-    elements.form.addEventListener('submit', (evt) => {
-      evt.preventDefault();
-      const formData = new FormData(evt.target);
-      const url = formData.get('url');
-      const { feeds } = watched;
-      watched.rssForm.statu = 'filling';
-      validate(url, feeds)
-        .then(() => {
-          watched.rssForm.valid = true;
-          watched.rssForm.fields.name.error = null;
-          watched.rssForm.status = 'sending';
-          return getNewFeed(url);
-        })
-        .then((data) => {
-          const { feed, posts } = data;
-          watched.feeds.unshift(feed);
-          watched.posts.unshift(...posts);
-          watched.rssForm.status = 'finished';
-        })
-        .catch((err) => {
-          watched.rssForm.valid = false;
-          watched.rssForm.fields.name.error = err.message;
-          watched.rssForm.status = 'failed';
-        })
-        .finally(() => {
-          watched.rssForm.status = 'filling';
-        });
-    });
-
-    elements.posts.addEventListener('click', (evt) => {
-      if (evt.target.tagName.toLowerCase() !== 'button') {
-        return;
-      }
-      const currentId = evt.target.getAttribute('data-id');
-      const currentPost = watched.posts.find((post) => post.id === currentId);
-      if (!watched.uiState.viewedPosts.includes(currentId)) {
-        watched.uiState.viewedPosts.push(currentId);
-      }
-      watched.uiState.modal.currentPost = currentPost;
-    });
-
-    update(watched);
   });
 };

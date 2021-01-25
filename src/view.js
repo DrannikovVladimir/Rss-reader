@@ -23,10 +23,12 @@ const formStateHandler = (state, value, elements) => {
       break;
     case 'sending':
       submit.setAttribute('disabled', 'disabled');
+      input.setAttribute('readonly', '');
       input.classList.remove('is-invalid');
       break;
     case 'finished':
       renderFeedback(null, elements);
+      input.removeAttribute('readonly');
       break;
     case 'failed':
       renderFeedback(error, elements);
