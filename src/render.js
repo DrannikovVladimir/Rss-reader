@@ -68,6 +68,7 @@ export default () => {
     a.setAttribute('href', link);
     a.setAttribute('data-id', id);
     a.setAttribute('target', '_blank');
+    a.setAttribute('rel', 'noopener noreferrer');
     a.textContent = title;
 
     return a;

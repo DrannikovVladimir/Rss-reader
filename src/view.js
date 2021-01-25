@@ -19,6 +19,7 @@ const formStateHandler = (state, value, elements) => {
       break;
     case 'filling':
       submit.removeAttribute('disabled', 'disabled');
+      input.removeAttribute('readonly', '');
       form.reset();
       break;
     case 'sending':

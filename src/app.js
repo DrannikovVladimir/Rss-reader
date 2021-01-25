@@ -81,7 +81,7 @@ export default () => {
     const formData = new FormData(evt.target);
     const url = formData.get('url');
     const { feeds } = watched;
-    watched.rssForm.statu = 'filling';
+    watched.rssForm.status = 'filling';
     validate(url, feeds)
       .then(() => {
         watched.rssForm.valid = true;
@@ -117,8 +117,6 @@ export default () => {
     watched.uiState.modal.currentPost = currentPost;
   });
 
-  update(watched);
-
   i18next.init({
     lng: 'en',
     resources,
@@ -135,5 +133,7 @@ export default () => {
         url: i18next.t('rssForm.feedback.url'),
       },
     });
+
+    // update(watched);
   });
 };
