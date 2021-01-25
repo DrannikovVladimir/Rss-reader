@@ -134,6 +134,6 @@ export default () => {
       },
     });
 
-    // update(watched);
+    update(watched);
   });
 };
