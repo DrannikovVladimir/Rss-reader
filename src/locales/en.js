@@ -9,10 +9,10 @@ export default {
       button: 'Add',
       feedback: {
         success: 'Rss has been loaded',
-        double: 'This Rss already exist',
+        double: 'Rss already exists',
         networkError: 'Network error',
         required: 'This is required field',
-        url: 'Must be valid URL',
+        url: 'Must be valid url',
       },
     },
     rssList: {
