@@ -1,10 +1,13 @@
+import i18next from 'i18next';
+
 export default (response) => {
   const { data: { contents } } = response;
   const parser = new DOMParser();
   const document = parser.parseFromString(contents, 'application/xml');
   const error = document.querySelector('parsererror');
   if (error) {
-    throw new Error(`${error.textContent}`);
+    const err = new Error(i18next.t('rssForm.feedback.validRss'));
+    throw err;
   }
   const titleFeed = document.querySelector('title').textContent;
   const descriptionFeed = document.querySelector('description').textContent;

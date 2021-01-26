@@ -19,21 +19,21 @@ const formStateHandler = (state, value, elements) => {
       break;
     case 'filling':
       submit.removeAttribute('disabled', 'disabled');
-      input.removeAttribute('readonly', '');
       form.reset();
       break;
     case 'sending':
       submit.setAttribute('disabled', 'disabled');
       input.setAttribute('readonly', '');
-      input.classList.remove('is-invalid');
       break;
     case 'finished':
       renderFeedback(null, elements);
+      input.classList.remove('is-invalid');
       input.removeAttribute('readonly');
       break;
     case 'failed':
       renderFeedback(error, elements);
       input.classList.add('is-invalid');
+      input.removeAttribute('readonly');
       break;
     default:
       throw new Error(`${value} is unknown state!`);

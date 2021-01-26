@@ -13,6 +13,7 @@ export default {
         networkError: 'Network error',
         required: 'This is required field',
         url: 'Must be valid url',
+        validRss: 'This source doesn\'t contain valid rss',
       },
     },
     rssList: {
