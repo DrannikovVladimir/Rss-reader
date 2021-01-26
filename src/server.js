@@ -7,9 +7,8 @@ export default (link) => {
   const url = getUrl(link);
   return axios.get(url, { timeout: 5000 })
     .then((response) => response)
-    .catch((err) => {
-      err.message = 'Network error';
-      console.log(err.message);
-      throw err;
+    .catch(() => {
+      const error = new Error('Network error');
+      throw error;
     });
 };

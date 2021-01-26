@@ -14,6 +14,30 @@ const validate = (link, feeds) => {
     .validate(link, { abortEarly: false });
 };
 
+const update = (watched) => {
+  const { posts, feeds } = watched;
+  updateFeed(posts, feeds)
+    .then((newPosts) => {
+      watched.posts.unshift(...newPosts);
+    })
+    .catch((err) => {
+      console.log(err.message);
+    })
+    .finally(() => {
+      setTimeout(() => update(watched), 5000);
+    });
+};
+
+yup.setLocale({
+  mixed: {
+    required: i18next.t('rssForm.feedback.required'),
+    notOneOf: i18next.t('rssForm.feedback.double'),
+  },
+  string: {
+    url: i18next.t('rssForm.feedback.url'),
+  },
+});
+
 export default () => {
   const state = {
     feeds: [],
@@ -57,24 +81,6 @@ export default () => {
   };
 
   const watched = watchedState(state, elements);
-
-  const update = () => {
-    const { posts, feeds } = watched;
-    updateFeed(posts, feeds)
-      .then((newPosts) => {
-        console.log(newPosts);
-        watched.posts.unshift(...newPosts);
-        watched.update.state = 'processed';
-      })
-      .catch((err) => {
-        console.log(err.message);
-        watched.update.state = 'failed';
-      })
-      .finally(() => {
-        setTimeout(update, 5000);
-        watched.update.state = 'waiting';
-      });
-  };
 
   elements.form.addEventListener('submit', (evt) => {
     evt.preventDefault();
@@ -121,19 +127,8 @@ export default () => {
     lng: 'en',
     resources,
   }).then(() => {
-    console.log('initialized');
     watched.rssForm.status = 'init';
 
-    yup.setLocale({
-      mixed: {
-        required: i18next.t('rssForm.feedback.required'),
-        notOneOf: i18next.t('rssForm.feedback.double'),
-      },
-      string: {
-        url: i18next.t('rssForm.feedback.url'),
-      },
-    });
-
-    // update(watched);
+    update(watched);
   });
 };
