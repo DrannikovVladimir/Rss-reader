@@ -1,7 +1,7 @@
 export default (response) => {
-  const { data } = response;
+  const { data: { contents } } = response;
   const parser = new DOMParser();
-  const document = parser.parseFromString(data, 'application/xml');
+  const document = parser.parseFromString(contents, 'application/xml');
   const error = document.querySelector('parsererror');
   if (error) {
     throw new Error(`${error.textContent}`);

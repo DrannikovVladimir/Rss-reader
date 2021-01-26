@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const PROXY = 'https://api.allorigins.win/raw?url';
+const PROXY = 'https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url';
 const getUrl = (link) => `${PROXY}=${link}`;
 
 export default (link) => {
