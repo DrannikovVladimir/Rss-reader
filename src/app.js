@@ -77,7 +77,6 @@ export default () => {
     const formData = new FormData(evt.target);
     const url = formData.get('url');
     const { feeds } = watched;
-    watched.rssForm.status = 'filling';
     validate(url, feeds)
       .then(() => {
         watched.rssForm.valid = true;

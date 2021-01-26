@@ -19,7 +19,7 @@ const formStateHandler = (state, value, elements) => {
       break;
     case 'filling':
       submit.removeAttribute('disabled', 'disabled');
-      form.reset();
+      input.removeAttribute('readonly');
       break;
     case 'sending':
       submit.setAttribute('disabled', 'disabled');
@@ -29,6 +29,7 @@ const formStateHandler = (state, value, elements) => {
       renderFeedback(null, elements);
       input.classList.remove('is-invalid');
       input.removeAttribute('readonly');
+      form.reset();
       break;
     case 'failed':
       renderFeedback(error, elements);
