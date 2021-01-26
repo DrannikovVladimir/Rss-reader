@@ -21,22 +21,12 @@ const update = (watched) => {
       watched.posts.unshift(...newPosts);
     })
     .catch((err) => {
-      console.log(err.message);
+      throw err.message;
     })
     .finally(() => {
       setTimeout(() => update(watched), 5000);
     });
 };
-
-yup.setLocale({
-  mixed: {
-    required: i18next.t('rssForm.feedback.required'),
-    notOneOf: i18next.t('rssForm.feedback.double'),
-  },
-  string: {
-    url: i18next.t('rssForm.feedback.url'),
-  },
-});
 
 export default () => {
   const state = {
@@ -102,6 +92,7 @@ export default () => {
         watched.rssForm.status = 'finished';
       })
       .catch((err) => {
+        console.log(err);
         watched.rssForm.valid = false;
         watched.rssForm.fields.name.error = err.message;
         watched.rssForm.status = 'failed';
@@ -128,6 +119,15 @@ export default () => {
     resources,
   }).then(() => {
     watched.rssForm.status = 'init';
+    yup.setLocale({
+      mixed: {
+        required: i18next.t('rssForm.feedback.required'),
+        notOneOf: i18next.t('rssForm.feedback.double'),
+      },
+      string: {
+        url: i18next.t('rssForm.feedback.url'),
+      },
+    });
 
     update(watched);
   });
