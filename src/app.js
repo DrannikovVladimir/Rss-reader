@@ -78,6 +78,7 @@ export default () => {
     evt.preventDefault();
     const formData = new FormData(evt.target);
     const url = formData.get('url');
+    console.log(watched);
     const { feeds } = watched;
     validate(url, feeds)
       .then(() => {
