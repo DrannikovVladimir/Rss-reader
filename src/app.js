@@ -4,14 +4,16 @@ import resources from './locales';
 import watchedState from './view';
 import { getNewFeed, updateFeed } from './rss';
 
-const validate = (link, feeds) => {
+const validate = (url, feeds) => {
+  console.log(url);
+  console.log(feeds);
   const links = feeds.map((feed) => feed.link);
   return yup
     .string()
     .required()
     .url()
     .notOneOf(links)
-    .validate(link, { abortEarly: false });
+    .validate(url, { abortEarly: false });
 };
 
 const update = (watched) => {
@@ -113,7 +115,9 @@ export default () => {
     watched.uiState.modal.currentPost = currentPost;
   });
 
-  i18next.init({
+  update(watched);
+
+  return i18next.init({
     lng: 'en',
     resources,
   }).then(() => {
@@ -127,7 +131,5 @@ export default () => {
         url: i18next.t('rssForm.feedback.url'),
       },
     });
-
-    update(watched);
   });
 };
