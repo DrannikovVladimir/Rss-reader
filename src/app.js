@@ -4,16 +4,43 @@ import resources from './locales';
 import watchedState from './view';
 import { getNewFeed, updateFeed } from './rss';
 
-const validate = (url, feeds) => {
-  console.log(url);
-  console.log(feeds);
+// const validate = (url, feeds) => {
+//   // console.log(url);
+//   // console.log(feeds);
+//   const links = feeds.map((feed) => feed.link);
+//   return yup
+//     .string()
+//     .required()
+//     .url()
+//     .notOneOf(links)
+//     .validate(url, { abortEarly: false });
+// };
+
+const validateSync = (url, feeds) => {
   const links = feeds.map((feed) => feed.link);
-  return yup
-    .string()
-    .required()
-    .url()
-    .notOneOf(links)
-    .validate(url, { abortEarly: false });
+  const schema = yup.string().required().url().notOneOf(links);
+  try {
+    schema.validateSync(url);
+    return null;
+  } catch (err) {
+    // console.log(err.message);
+    return err.message;
+  }
+};
+
+const updateValidationState = (url, watched) => {
+  const { feeds, rssForm } = watched;
+  const error = validateSync(url, feeds);
+  console.log(error);
+  if (error) {
+    rssForm.valid = false;
+    rssForm.fields.name.error = error;
+    rssForm.status = 'failed';
+    return;
+  }
+  rssForm.valid = true;
+  rssForm.fields.name.error = null;
+  rssForm.status = 'sending';
 };
 
 const update = (watched) => {
@@ -78,15 +105,15 @@ export default () => {
     evt.preventDefault();
     const formData = new FormData(evt.target);
     const url = formData.get('url');
+    // const { feeds } = watched;
+    updateValidationState(url, watched);
+    watched.rssForm.status = 'filling';
     console.log(watched);
-    const { feeds } = watched;
-    validate(url, feeds)
-      .then(() => {
-        watched.rssForm.valid = true;
-        watched.rssForm.fields.name.error = null;
-        watched.rssForm.status = 'sending';
-        return getNewFeed(url);
-      })
+    if (!watched.rssForm.valid) {
+      return;
+    }
+    const newFeed = getNewFeed(url);
+    newFeed
       .then((data) => {
         const { feed, posts } = data;
         watched.feeds.unshift(feed);
@@ -94,7 +121,6 @@ export default () => {
         watched.rssForm.status = 'finished';
       })
       .catch((err) => {
-        console.log(err);
         watched.rssForm.valid = false;
         watched.rssForm.fields.name.error = err.message;
         watched.rssForm.status = 'failed';
@@ -102,6 +128,27 @@ export default () => {
       .finally(() => {
         watched.rssForm.status = 'filling';
       });
+    // validate(url, feeds)
+    //   .then(() => {
+    //     watched.rssForm.valid = true;
+    //     watched.rssForm.fields.name.error = null;
+    //     watched.rssForm.status = 'sending';
+    //     return getNewFeed(url);
+    //   })
+    //   .then((data) => {
+    //     const { feed, posts } = data;
+    //     watched.feeds.unshift(feed);
+    //     watched.posts.unshift(...posts);
+    //     watched.rssForm.status = 'finished';
+    //   })
+    //   .catch((err) => {
+    //     watched.rssForm.valid = false;
+    //     watched.rssForm.fields.name.error = err.message;
+    //     watched.rssForm.status = 'failed';
+    //   })
+    //   .finally(() => {
+    //     watched.rssForm.status = 'filling';
+    //   });
   });
 
   elements.posts.addEventListener('click', (evt) => {
