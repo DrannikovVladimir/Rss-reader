@@ -12,6 +12,7 @@ const {
 
 const formStateHandler = (state, value, elements) => {
   const { rssForm: { fields: { name: { error } } } } = state;
+  const { processError } = state;
   const { input, submit, form } = elements;
   switch (value) {
     case 'init':
@@ -33,7 +34,7 @@ const formStateHandler = (state, value, elements) => {
       form.reset();
       break;
     case 'failed':
-      renderFeedback(error, elements);
+      renderFeedback(error || processError, elements);
       input.classList.add('is-invalid');
       input.removeAttribute('readonly');
       submit.removeAttribute('disabled', 'disabled');
@@ -45,7 +46,7 @@ const formStateHandler = (state, value, elements) => {
 
 export default (state, elements) => {
   const watchedState = onChange(state, (path, value) => {
-    // console.log(path, value);
+    console.log(path, value);
     switch (path) {
       case 'rssForm.status':
         formStateHandler(state, value, elements);

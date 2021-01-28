@@ -31,7 +31,6 @@ const validateSync = (url, feeds) => {
 const updateValidationState = (url, watched) => {
   const { feeds, rssForm } = watched;
   const error = validateSync(url, feeds);
-  console.log(error);
   if (error) {
     rssForm.valid = false;
     rssForm.fields.name.error = error;
@@ -103,14 +102,14 @@ export default () => {
 
   elements.form.addEventListener('submit', (evt) => {
     evt.preventDefault();
+    watched.rssForm.status = 'filling';
     const formData = new FormData(evt.target);
     const url = formData.get('url');
     updateValidationState(url, watched);
     if (!watched.rssForm.valid) {
       return;
     }
-    const newFeed = getNewFeed(url);
-    newFeed
+    getNewFeed(url)
       .then((data) => {
         const { feed, posts } = data;
         watched.feeds.unshift(feed);
@@ -118,8 +117,7 @@ export default () => {
         watched.rssForm.status = 'finished';
       })
       .catch((err) => {
-        watched.rssForm.valid = false;
-        watched.rssForm.fields.name.error = err.message;
+        watched.processError = err.message;
         watched.rssForm.status = 'failed';
       })
       .finally(() => {
@@ -160,7 +158,7 @@ export default () => {
     watched.uiState.modal.currentPost = currentPost;
   });
 
-  update(watched);
+  // update(watched);
 
   return i18next.init({
     lng: 'en',
