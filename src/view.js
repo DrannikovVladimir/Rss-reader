@@ -11,7 +11,7 @@ const {
 } = render();
 
 const formStateHandler = (state, value, elements) => {
-  const { rssForm: { fields: { name: { error } } } } = state;
+  const { rssForm: { error } } = state;
   const { processError } = state;
   const { input, submit, form } = elements;
   switch (value) {
@@ -46,7 +46,6 @@ const formStateHandler = (state, value, elements) => {
 
 export default (state, elements) => {
   const watchedState = onChange(state, (path, value) => {
-    console.log(path, value);
     switch (path) {
       case 'rssForm.status':
         formStateHandler(state, value, elements);
