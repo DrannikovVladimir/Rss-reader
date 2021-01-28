@@ -40,7 +40,7 @@ const updateValidationState = (url, watched) => {
   }
   rssForm.valid = true;
   rssForm.fields.name.error = null;
-  rssForm.status = 'sending';
+  rssForm.status = 'validated';
 };
 
 const update = (watched) => {
@@ -105,10 +105,7 @@ export default () => {
     evt.preventDefault();
     const formData = new FormData(evt.target);
     const url = formData.get('url');
-    // const { feeds } = watched;
     updateValidationState(url, watched);
-    watched.rssForm.status = 'filling';
-    console.log(watched);
     if (!watched.rssForm.valid) {
       return;
     }
