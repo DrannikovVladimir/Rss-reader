@@ -4,18 +4,6 @@ import resources from './locales';
 import watchedState from './view';
 import { getNewFeed, updateFeed } from './rss';
 
-// const validate = (url, feeds) => {
-//   // console.log(url);
-//   // console.log(feeds);
-//   const links = feeds.map((feed) => feed.link);
-//   return yup
-//     .string()
-//     .required()
-//     .url()
-//     .notOneOf(links)
-//     .validate(url, { abortEarly: false });
-// };
-
 const validateSync = (url, feeds) => {
   const links = feeds.map((feed) => feed.link);
   const schema = yup.string().required().url().notOneOf(links);
@@ -23,7 +11,6 @@ const validateSync = (url, feeds) => {
     schema.validateSync(url);
     return null;
   } catch (err) {
-    // console.log(err.message);
     return err.message;
   }
 };
@@ -33,12 +20,12 @@ const updateValidationState = (url, watched) => {
   const error = validateSync(url, feeds);
   if (error) {
     rssForm.valid = false;
-    rssForm.fields.name.error = error;
+    rssForm.error = error;
     rssForm.status = 'failed';
     return;
   }
   rssForm.valid = true;
-  rssForm.fields.name.error = null;
+  rssForm.error = null;
   rssForm.status = 'validated';
 };
 
@@ -61,20 +48,13 @@ export default () => {
     feeds: [],
     posts: [],
     rssForm: {
-      processError: null,
       status: 'filling',
       valid: false,
-      fields: {
-        name: {
-          error: null,
-        },
-      },
+      error: null,
     },
-    update: {
-      state: 'waiting',
-    },
+    processError: null,
     uiState: {
-      viewedPosts: [],
+      viewedPosts: new Set(),
       modal: {
         currentPost: null,
       },
@@ -123,27 +103,6 @@ export default () => {
       .finally(() => {
         watched.rssForm.status = 'filling';
       });
-    // validate(url, feeds)
-    //   .then(() => {
-    //     watched.rssForm.valid = true;
-    //     watched.rssForm.fields.name.error = null;
-    //     watched.rssForm.status = 'sending';
-    //     return getNewFeed(url);
-    //   })
-    //   .then((data) => {
-    //     const { feed, posts } = data;
-    //     watched.feeds.unshift(feed);
-    //     watched.posts.unshift(...posts);
-    //     watched.rssForm.status = 'finished';
-    //   })
-    //   .catch((err) => {
-    //     watched.rssForm.valid = false;
-    //     watched.rssForm.fields.name.error = err.message;
-    //     watched.rssForm.status = 'failed';
-    //   })
-    //   .finally(() => {
-    //     watched.rssForm.status = 'filling';
-    //   });
   });
 
   elements.posts.addEventListener('click', (evt) => {
@@ -152,19 +111,18 @@ export default () => {
     }
     const currentId = evt.target.getAttribute('data-id');
     const currentPost = watched.posts.find((post) => post.id === currentId);
-    if (!watched.uiState.viewedPosts.includes(currentId)) {
-      watched.uiState.viewedPosts.push(currentId);
-    }
+    watched.uiState.viewedPosts.add(currentId);
     watched.uiState.modal.currentPost = currentPost;
   });
 
-  // update(watched);
+  update(watched);
 
   return i18next.init({
     lng: 'en',
     resources,
   }).then(() => {
     watched.rssForm.status = 'init';
+
     yup.setLocale({
       mixed: {
         required: i18next.t('rssForm.feedback.required'),
