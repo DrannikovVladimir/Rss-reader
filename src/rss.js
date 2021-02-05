@@ -2,7 +2,10 @@ import _ from 'lodash';
 import getRSS from './server';
 import parse from './parser';
 
-const getData = (link) => getRSS(link).then((data) => parse(data));
+const getData = (link) => getRSS(link).then((response) => {
+  const { data: { contents } } = response;
+  return parse(contents);
+});
 
 const makeFeed = (feed, link) => {
   const {
@@ -36,24 +39,24 @@ const makePosts = (feedId, posts) => posts.map((post) => {
 
 const getNewFeed = (link) => getData(link)
   .then((data) => {
-    const { feedsData, postsData } = data;
-    const feed = makeFeed(feedsData, link);
+    const { channel, list } = data;
+    const feed = makeFeed(channel, link);
     const { id: feedId } = feed;
-    const posts = makePosts(feedId, postsData);
+    const posts = makePosts(feedId, list);
     return { feed, posts };
   });
 
-const postsComparator = (postData, existedPost) => postData.link === existedPost.link
-  && postData.description === existedPost.description;
+const comparator = (item, post) => item.link === post.link
+  && item.description === post.description;
 
 const updateFeed = (posts, feeds) => {
   const promises = feeds.map((feed) => {
     const { id, link } = feed;
     return getData(link)
       .then((data) => {
-        const { postsData } = data;
+        const { list } = data;
         const existedPosts = posts.filter((post) => post.feedId === id);
-        const newPostsLinks = _.differenceWith(postsData, existedPosts, postsComparator);
+        const newPostsLinks = _.differenceWith(list, existedPosts, comparator);
         return makePosts(id, newPostsLinks);
       });
   });

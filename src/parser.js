@@ -1,20 +1,17 @@
-import i18next from 'i18next';
-
-export default (response) => {
-  const { data: { contents } } = response;
+export default (contents) => {
   const parser = new DOMParser();
   const document = parser.parseFromString(contents, 'application/xml');
   const error = document.querySelector('parsererror');
   if (error) {
-    const err = new Error(i18next.t('rssForm.feedback.validRss'));
+    const err = new Error('rssForm.feedback.validRss');
     throw err;
   }
-  const titleFeed = document.querySelector('title').textContent;
-  const descriptionFeed = document.querySelector('description').textContent;
-  const items = document.querySelectorAll('item');
-  const feedsData = { title: titleFeed, description: descriptionFeed };
+  const titleChannel = document.querySelector('title').textContent;
+  const descriptionChannel = document.querySelector('description').textContent;
+  const channel = { title: titleChannel, description: descriptionChannel };
 
-  const postsData = [...items].map((item) => {
+  const items = document.querySelectorAll('item');
+  const list = [...items].map((item) => {
     const title = item.querySelector('title').textContent;
     const link = item.querySelector('link').textContent;
     const description = item.querySelector('description').textContent;
@@ -26,7 +23,7 @@ export default (response) => {
   });
 
   return ({
-    feedsData,
-    postsData,
+    channel,
+    list,
   });
 };
