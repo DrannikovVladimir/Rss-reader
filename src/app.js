@@ -4,6 +4,21 @@ import resources from './locales';
 import watchedState from './view';
 import { getNewFeed, updateFeed } from './rss';
 
+i18next.init({
+  lng: 'en',
+  resources,
+});
+
+yup.setLocale({
+  mixed: {
+    required: 'rssForm.feedback.required',
+    notOneOf: 'rssForm.feedback.double',
+  },
+  string: {
+    url: 'rssForm.feedback.url',
+  },
+});
+
 const validateSync = (url, feeds) => {
   const links = feeds.map((feed) => feed.link);
   const schema = yup.string().required().url().notOneOf(links);
@@ -45,6 +60,7 @@ const update = (watched) => {
 
 export default () => {
   const state = {
+    appStatus: 'waiting',
     feeds: [],
     posts: [],
     rssForm: {
@@ -115,22 +131,6 @@ export default () => {
     watched.uiState.modal.currentPost = currentPost;
   });
 
+  watched.appStatus = 'init';
   update(watched);
-
-  return i18next.init({
-    lng: 'en',
-    resources,
-  }).then(() => {
-    watched.rssForm.status = 'init';
-
-    yup.setLocale({
-      mixed: {
-        required: i18next.t('rssForm.feedback.required'),
-        notOneOf: i18next.t('rssForm.feedback.double'),
-      },
-      string: {
-        url: i18next.t('rssForm.feedback.url'),
-      },
-    });
-  });
 };

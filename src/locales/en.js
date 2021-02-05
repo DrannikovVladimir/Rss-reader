@@ -2,7 +2,7 @@ export default {
   translation: {
     appName: 'RSS Reader',
     appLead: 'Start reading RSS today! It is easy, it is nicely.',
-    appExample: 'Examples: http://rss.cnn.com/rss/cnn_latest.rss',
+    appExample: 'Examples: https://ru.hexlet.io/lessons.rss',
     appCopy: 'Vladimir Drannikov',
     rssForm: {
       placeholder: 'RSS link',

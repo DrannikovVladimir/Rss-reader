@@ -1,23 +1,18 @@
 import onChange from 'on-change';
-import render from './render';
-
-const {
+import {
   renderFeeds,
   renderPosts,
   renderFeedback,
   renderContentElements,
   updateModal,
   updateUiLinks,
-} = render();
+} from './render';
 
 const formStateHandler = (state, value, elements) => {
   const { rssForm: { error } } = state;
   const { processError } = state;
   const { input, submit, form } = elements;
   switch (value) {
-    case 'init':
-      renderContentElements(elements);
-      break;
     case 'validated':
       submit.setAttribute('disabled', 'disabled');
       input.setAttribute('readonly', true);
@@ -47,6 +42,9 @@ const formStateHandler = (state, value, elements) => {
 export default (state, elements) => {
   const watchedState = onChange(state, (path, value) => {
     switch (path) {
+      case 'appStatus':
+        renderContentElements(elements);
+        break;
       case 'rssForm.status':
         formStateHandler(state, value, elements);
         break;
