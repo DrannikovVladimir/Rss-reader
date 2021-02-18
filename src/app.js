@@ -117,7 +117,7 @@ export default () => {
           watched.posts.unshift(...posts);
           watched.rssLoading.status = 'finished';
         })
-        .catch((err) => {
+        .catch(() => {
           watched.rssLoading.processError = 'rssForm.feedback.networkError';
           watched.rssLoading.status = 'failed';
         })
