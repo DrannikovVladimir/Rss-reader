@@ -97,7 +97,7 @@ export default () => {
   update(state);
 
   return i18next.init({
-    lng: 'en',
+    lng: 'ru',
     resources,
   }).then(() => {
     const watched = watchedState(state, elements);
@@ -118,7 +118,7 @@ export default () => {
           watched.rssLoading.status = 'finished';
         })
         .catch((err) => {
-          watched.rssLoading.processError = err.message;
+          watched.rssLoading.processError = 'rssForm.feedback.networkError';
           watched.rssLoading.status = 'failed';
         })
         .finally(() => {
