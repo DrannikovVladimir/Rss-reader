@@ -4,6 +4,11 @@ import resources from './locales';
 import watchedState from './view';
 import { getNewFeed, updateFeed } from './rss';
 
+i18next.init({
+  lng: 'ru',
+  resources,
+});
+
 yup.setLocale({
   mixed: {
     required: 'rssForm.feedback.required',
@@ -94,48 +99,42 @@ export default () => {
     modalClose: document.querySelector('button.close-btn'),
   };
 
-  update(state);
+  const watched = watchedState(state, elements);
 
-  return i18next.init({
-    lng: 'ru',
-    resources,
-  }).then(() => {
-    const watched = watchedState(state, elements);
-
-    elements.form.addEventListener('submit', (evt) => {
-      evt.preventDefault();
-      const formData = new FormData(evt.target);
-      const url = formData.get('url');
-      updateValidationState(url, watched);
-      if (!watched.rssForm.valid) {
-        return;
-      }
-      getNewFeed(url)
-        .then((data) => {
-          const { feed, posts } = data;
-          watched.feeds.unshift(feed);
-          watched.posts.unshift(...posts);
-          watched.rssLoading.status = 'finished';
-        })
-        .catch(() => {
-          watched.rssLoading.processError = 'rssForm.feedback.networkError';
-          watched.rssLoading.status = 'failed';
-        })
-        .finally(() => {
-          watched.rssLoading.status = 'waiting';
-        });
-    });
-
-    elements.posts.addEventListener('click', (evt) => {
-      if (evt.target.tagName.toLowerCase() !== 'button') {
-        return;
-      }
-      const currentId = evt.target.getAttribute('data-id');
-      const currentPost = watched.posts.find((post) => post.id === currentId);
-      watched.uiState.viewedPosts.add(currentId);
-      watched.uiState.modal.currentPost = currentPost;
-    });
-
-    watched.appStatus = 'init';
+  elements.form.addEventListener('submit', (evt) => {
+    evt.preventDefault();
+    const formData = new FormData(evt.target);
+    const url = formData.get('url');
+    updateValidationState(url, watched);
+    if (!watched.rssForm.valid) {
+      return;
+    }
+    getNewFeed(url)
+      .then((data) => {
+        const { feed, posts } = data;
+        watched.feeds.unshift(feed);
+        watched.posts.unshift(...posts);
+        watched.rssLoading.status = 'finished';
+      })
+      .catch(() => {
+        watched.rssLoading.processError = 'rssForm.feedback.networkError';
+        watched.rssLoading.status = 'failed';
+      })
+      .finally(() => {
+        watched.rssLoading.status = 'waiting';
+      });
   });
+
+  elements.posts.addEventListener('click', (evt) => {
+    if (evt.target.tagName.toLowerCase() !== 'button') {
+      return;
+    }
+    const currentId = evt.target.getAttribute('data-id');
+    const currentPost = watched.posts.find((post) => post.id === currentId);
+    watched.uiState.viewedPosts.add(currentId);
+    watched.uiState.modal.currentPost = currentPost;
+  });
+
+  watched.appStatus = 'init';
+  update(state);
 };
