@@ -19,7 +19,7 @@ export default {
     rssList: {
       feedsTitle: 'Каналы',
       postsTitle: 'Посты',
-      button: 'Посмотреть',
+      button: 'Просмотр',
     },
     modal: {
       link: 'Открыть',
