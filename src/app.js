@@ -4,11 +4,6 @@ import resources from './locales';
 import watchedState from './view';
 import { getNewFeed, updateFeed } from './rss';
 
-i18next.init({
-  lng: 'en',
-  resources,
-});
-
 yup.setLocale({
   mixed: {
     required: 'rssForm.feedback.required',
@@ -37,11 +32,13 @@ const updateValidationState = (url, watched) => {
     rssForm.valid = false;
     rssForm.error = error;
     rssForm.status = 'failed';
+    rssForm.status = 'filling';
     return;
   }
   rssForm.valid = true;
   rssForm.error = null;
   rssForm.status = 'validated';
+  rssForm.status = 'filling';
 };
 
 const update = (watched) => {
@@ -63,12 +60,15 @@ export default () => {
     appStatus: 'waiting',
     feeds: [],
     posts: [],
+    rssLoading: {
+      status: 'waiting',
+      processError: null,
+    },
     rssForm: {
       status: 'filling',
       valid: false,
       error: null,
     },
-    processError: null,
     uiState: {
       viewedPosts: new Set(),
       modal: {
@@ -94,43 +94,48 @@ export default () => {
     modalClose: document.querySelector('button.close-btn'),
   };
 
-  const watched = watchedState(state, elements);
+  update(state);
 
-  elements.form.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-    watched.rssForm.status = 'filling';
-    const formData = new FormData(evt.target);
-    const url = formData.get('url');
-    updateValidationState(url, watched);
-    if (!watched.rssForm.valid) {
-      return;
-    }
-    getNewFeed(url)
-      .then((data) => {
-        const { feed, posts } = data;
-        watched.feeds.unshift(feed);
-        watched.posts.unshift(...posts);
-        watched.rssForm.status = 'finished';
-      })
-      .catch((err) => {
-        watched.processError = err.message;
-        watched.rssForm.status = 'failed';
-      })
-      .finally(() => {
-        watched.rssForm.status = 'filling';
-      });
+  return i18next.init({
+    lng: 'en',
+    resources,
+  }).then(() => {
+    const watched = watchedState(state, elements);
+
+    elements.form.addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      const formData = new FormData(evt.target);
+      const url = formData.get('url');
+      updateValidationState(url, watched);
+      if (!watched.rssForm.valid) {
+        return;
+      }
+      getNewFeed(url)
+        .then((data) => {
+          const { feed, posts } = data;
+          watched.feeds.unshift(feed);
+          watched.posts.unshift(...posts);
+          watched.rssLoading.status = 'finished';
+        })
+        .catch((err) => {
+          watched.rssLoading.processError = err.message;
+          watched.rssLoading.status = 'failed';
+        })
+        .finally(() => {
+          watched.rssLoading.status = 'waiting';
+        });
+    });
+
+    elements.posts.addEventListener('click', (evt) => {
+      if (evt.target.tagName.toLowerCase() !== 'button') {
+        return;
+      }
+      const currentId = evt.target.getAttribute('data-id');
+      const currentPost = watched.posts.find((post) => post.id === currentId);
+      watched.uiState.viewedPosts.add(currentId);
+      watched.uiState.modal.currentPost = currentPost;
+    });
+
+    watched.appStatus = 'init';
   });
-
-  elements.posts.addEventListener('click', (evt) => {
-    if (evt.target.tagName.toLowerCase() !== 'button') {
-      return;
-    }
-    const currentId = evt.target.getAttribute('data-id');
-    const currentPost = watched.posts.find((post) => post.id === currentId);
-    watched.uiState.viewedPosts.add(currentId);
-    watched.uiState.modal.currentPost = currentPost;
-  });
-
-  watched.appStatus = 'init';
-  update(watched);
 };

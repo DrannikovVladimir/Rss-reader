@@ -8,28 +8,42 @@ import {
   updateUiLinks,
 } from './render';
 
-const formStateHandler = (state, value, elements) => {
-  const { rssForm: { error } } = state;
-  const { processError } = state;
-  const { input, submit, form } = elements;
+const rssLoadingHandler = (state, value, elements) => {
+  const { input, submit } = elements;
+  const { rssLoading: { processError } } = state;
   switch (value) {
-    case 'validated':
-      submit.setAttribute('disabled', 'disabled');
-      input.setAttribute('readonly', true);
+    case 'waiting':
       break;
-    case 'filling':
-      break;
-    case 'sending':
+    case 'failed':
+      renderFeedback(processError, elements);
+      input.classList.add('is-invalid');
+      input.removeAttribute('readonly');
+      submit.removeAttribute('disabled', 'disabled');
       break;
     case 'finished':
       renderFeedback(null, elements);
       input.classList.remove('is-invalid');
       input.removeAttribute('readonly');
       submit.removeAttribute('disabled', 'disabled');
+      break;
+    default:
+      throw new Error(`${value} is unknown state!`);
+  }
+};
+
+const formStateHandler = (state, value, elements) => {
+  const { rssForm: { error } } = state;
+  const { input, submit, form } = elements;
+  switch (value) {
+    case 'filling':
+      break;
+    case 'validated':
+      submit.setAttribute('disabled', 'disabled');
+      input.setAttribute('readonly', true);
       form.reset();
       break;
     case 'failed':
-      renderFeedback(error || processError, elements);
+      renderFeedback(error, elements);
       input.classList.add('is-invalid');
       input.removeAttribute('readonly');
       submit.removeAttribute('disabled', 'disabled');
@@ -42,6 +56,9 @@ const formStateHandler = (state, value, elements) => {
 export default (state, elements) => {
   const watchedState = onChange(state, (path, value) => {
     switch (path) {
+      case 'rssLoading.status':
+        rssLoadingHandler(state, value, elements);
+        break;
       case 'appStatus':
         renderContentElements(elements);
         break;
