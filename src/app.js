@@ -116,8 +116,12 @@ export default () => {
         watched.posts.unshift(...posts);
         watched.rssLoading.status = 'finished';
       })
-      .catch(() => {
-        watched.rssLoading.processError = 'rssForm.feedback.networkError';
+      .catch((err) => {
+        const mappingError = {
+          'Invalid Rss': 'rssForm.feedback.validRss',
+          'Network error': 'rssForm.feedback.networkError',
+        };
+        watched.rssLoading.processError = mappingError[err.message];
         watched.rssLoading.status = 'failed';
       })
       .finally(() => {

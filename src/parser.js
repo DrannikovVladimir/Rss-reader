@@ -3,7 +3,7 @@ export default (contents) => {
   const document = parser.parseFromString(contents, 'application/xml');
   const error = document.querySelector('parsererror');
   if (error) {
-    const err = new Error('rssForm.feedback.validRss');
+    const err = new Error('Invalid Rss');
     throw err;
   }
   const titleChannel = document.querySelector('title').textContent;
