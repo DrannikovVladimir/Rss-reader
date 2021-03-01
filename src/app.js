@@ -122,11 +122,15 @@ export default () => {
         watched.rssLoading.status = 'finished';
       })
       .catch((err) => {
-        const mappingError = {
-          'Invalid Rss': 'rssForm.feedback.validRss',
-          'Network error': 'rssForm.feedback.networkError',
-        };
-        watched.rssLoading.error = mappingError[err.message];
+        if (err.isRssError || err.isNetworkError) {
+          const mappingError = {
+            rss: 'rssForm.feedback.validRss',
+            network: 'rssForm.feedback.networkError',
+          };
+          watched.rssLoading.error = mappingError[err.type];
+        } else {
+          watched.rssLoading.error = 'rssForm.feedback.otherError';
+        }
         watched.rssLoading.status = 'failed';
       });
   });

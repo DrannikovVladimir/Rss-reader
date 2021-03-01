@@ -14,6 +14,7 @@ export default {
         required: 'Это обязательное поле',
         url: 'Ссылка должна быть валидным URL',
         validRss: 'Ресурс не содержит валидный RSS',
+        otherError: 'Внутренняя ошибка',
       },
     },
     rssList: {

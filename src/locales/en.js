@@ -14,6 +14,7 @@ export default {
         required: 'This is required field',
         url: 'Must be valid url',
         validRss: 'This source doesn\'t contain valid rss',
+        otherError: 'Internal error',
       },
     },
     rssList: {

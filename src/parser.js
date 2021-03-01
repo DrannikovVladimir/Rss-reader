@@ -4,6 +4,8 @@ export default (contents) => {
   const error = document.querySelector('parsererror');
   if (error) {
     const err = new Error('Invalid Rss');
+    err.isRssError = true;
+    err.type = 'rss';
     throw err;
   }
   const titleChannel = document.querySelector('title').textContent;
