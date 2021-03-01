@@ -10,12 +10,12 @@ import {
 
 const rssLoadingHandler = (state, value, elements) => {
   const { input, submit } = elements;
-  const { rssLoading: { processError } } = state;
+  const { rssLoading: { error } } = state;
   switch (value) {
     case 'waiting':
       break;
     case 'failed':
-      renderFeedback(processError, elements);
+      renderFeedback(error, elements);
       input.classList.add('is-invalid');
       input.removeAttribute('readonly');
       submit.removeAttribute('disabled', 'disabled');
@@ -55,6 +55,7 @@ const formStateHandler = (state, value, elements) => {
 
 export default (state, elements) => {
   const watchedState = onChange(state, (path, value) => {
+    console.log(path);
     switch (path) {
       case 'rssLoading.status':
         rssLoadingHandler(state, value, elements);

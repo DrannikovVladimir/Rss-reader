@@ -67,7 +67,7 @@ export default () => {
     posts: [],
     rssLoading: {
       status: 'waiting',
-      processError: null,
+      error: null,
     },
     rssForm: {
       status: 'filling',
@@ -121,7 +121,7 @@ export default () => {
           'Invalid Rss': 'rssForm.feedback.validRss',
           'Network error': 'rssForm.feedback.networkError',
         };
-        watched.rssLoading.processError = mappingError[err.message];
+        watched.rssLoading.error = mappingError[err.message];
         watched.rssLoading.status = 'failed';
       })
       .finally(() => {
