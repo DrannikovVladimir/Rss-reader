@@ -85,6 +85,7 @@ export default () => {
 
   return i18next.init({
     lng: 'ru',
+    fallbackLng: 'ru',
     resources,
   }).then(() => {
     const elements = {
