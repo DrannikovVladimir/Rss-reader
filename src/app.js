@@ -113,6 +113,7 @@ export default () => {
     if (!watched.rssForm.valid) {
       return;
     }
+    watched.rssLoading.status = 'sending';
     getNewFeed(url)
       .then((data) => {
         const { feed, posts } = data;

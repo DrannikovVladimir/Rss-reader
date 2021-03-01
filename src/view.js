@@ -14,6 +14,10 @@ const rssLoadingHandler = (state, value, elements) => {
   switch (value) {
     case 'waiting':
       break;
+    case 'sending':
+      input.setAttribute('readonly', true);
+      submit.setAttribute('disabled', 'disabled');
+      break;
     case 'failed':
       renderFeedback(error, elements);
       input.classList.add('is-invalid');
@@ -50,7 +54,6 @@ const formStateHandler = (state, value, elements) => {
 
 export default (state, elements) => {
   const watchedState = onChange(state, (path, value) => {
-    console.log(path);
     switch (path) {
       case 'rssLoading.status':
         rssLoadingHandler(state, value, elements);
