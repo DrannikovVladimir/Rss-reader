@@ -70,7 +70,7 @@ export default () => {
     feeds: [],
     posts: [],
     rssLoading: {
-      status: 'waiting',
+      status: 'finished',
       error: null,
     },
     rssForm: {
@@ -128,9 +128,6 @@ export default () => {
         };
         watched.rssLoading.error = mappingError[err.message];
         watched.rssLoading.status = 'failed';
-      })
-      .finally(() => {
-        watched.rssLoading.status = 'waiting';
       });
   });
 
