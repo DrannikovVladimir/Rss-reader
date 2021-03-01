@@ -33,20 +33,15 @@ const rssLoadingHandler = (state, value, elements) => {
 
 const formStateHandler = (state, value, elements) => {
   const { rssForm: { error } } = state;
-  const { input, submit, form } = elements;
-  switch (value) {
-    case 'filling':
-      break;
+  const { input, form } = elements;
+  switch (value.status) {
     case 'validated':
-      submit.setAttribute('disabled', 'disabled');
-      input.setAttribute('readonly', true);
+      input.classList.remove('is-invalid');
       form.reset();
       break;
     case 'failed':
       renderFeedback(error, elements);
       input.classList.add('is-invalid');
-      input.removeAttribute('readonly');
-      submit.removeAttribute('disabled', 'disabled');
       break;
     default:
       throw new Error(`${value} is unknown state!`);
@@ -63,7 +58,7 @@ export default (state, elements) => {
       case 'appStatus':
         renderContentElements(elements);
         break;
-      case 'rssForm.status':
+      case 'rssForm':
         formStateHandler(state, value, elements);
         break;
       case 'feeds':

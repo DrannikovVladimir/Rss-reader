@@ -31,19 +31,23 @@ const validateSync = (url, feeds) => {
 };
 
 const updateValidationState = (url, watched) => {
-  const { feeds } = watched;
+  const { feeds, rssForm } = watched;
   const error = validateSync(url, feeds);
   if (error) {
-    watched.rssForm.valid = false;
-    watched.rssForm.error = error;
-    watched.rssForm.status = 'failed';
-    watched.rssForm.status = 'filling';
+    watched.rssForm = {
+      ...rssForm,
+      valid: false,
+      error,
+      status: 'failed',
+    };
     return;
   }
-  watched.rssForm.valid = true;
-  watched.rssForm.error = null;
-  watched.rssForm.status = 'validated';
-  watched.rssForm.status = 'filling';
+  watched.rssForm = {
+    ...rssForm,
+    valid: true,
+    error,
+    status: 'validated',
+  };
 };
 
 const update = (watched) => {
