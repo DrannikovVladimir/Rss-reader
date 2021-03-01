@@ -4,11 +4,6 @@ import resources from './locales';
 import watchedState from './view';
 import { getNewFeed, updateFeed } from './rss';
 
-i18next.init({
-  lng: 'ru',
-  resources,
-});
-
 yup.setLocale({
   mixed: {
     required: 'rssForm.feedback.required',
@@ -86,65 +81,71 @@ export default () => {
     },
   };
 
-  const elements = {
-    appName: document.querySelector('.display-3'),
-    appLead: document.querySelector('.lead'),
-    appExample: document.querySelector('.my-1'),
-    appCopy: document.querySelector('footer span a'),
-    appFeedback: document.querySelector('.feedback'),
-    form: document.querySelector('.rss-form'),
-    input: document.querySelector('input[name="url"]'),
-    submit: document.querySelector('button[type="submit"]'),
-    feeds: document.querySelector('.feeds'),
-    posts: document.querySelector('.posts'),
-    modalTitle: document.querySelector('.modal-title'),
-    modalBody: document.querySelector('.modal-body'),
-    modalLinkPost: document.querySelector('a.full-article'),
-    modalClose: document.querySelector('button.close-btn'),
-  };
-
-  const watched = watchedState(state, elements);
-
-  elements.form.addEventListener('submit', (evt) => {
-    evt.preventDefault();
-    const formData = new FormData(evt.target);
-    const url = formData.get('url');
-    updateValidationState(url, watched);
-    if (!watched.rssForm.valid) {
-      return;
-    }
-    watched.rssLoading.status = 'sending';
-    getNewFeed(url)
-      .then((data) => {
-        const { feed, posts } = data;
-        watched.feeds.unshift(feed);
-        watched.posts.unshift(...posts);
-        watched.rssLoading.status = 'finished';
-      })
-      .catch((err) => {
-        if (err.isRssError || err.isNetworkError) {
-          const mappingError = {
-            rss: 'rssForm.feedback.validRss',
-            network: 'rssForm.feedback.networkError',
-          };
-          watched.rssLoading.error = mappingError[err.type];
-        } else {
-          watched.rssLoading.error = 'rssForm.feedback.otherError';
-        }
-        watched.rssLoading.status = 'failed';
-      });
-  });
-
-  elements.posts.addEventListener('click', (evt) => {
-    if (evt.target.tagName.toLowerCase() !== 'button') {
-      return;
-    }
-    const currentId = evt.target.getAttribute('data-id');
-    const currentPost = watched.posts.find((post) => post.id === currentId);
-    watched.uiState.viewedPosts.add(currentId);
-    watched.uiState.modal.currentPost = currentPost;
-  });
-
-  watched.appStatus = 'init';
   update(state);
+
+  return i18next.init({
+    lng: 'ru',
+    resources,
+  }).then(() => {
+    const elements = {
+      appName: document.querySelector('.display-3'),
+      appLead: document.querySelector('.lead'),
+      appExample: document.querySelector('.my-1'),
+      appCopy: document.querySelector('footer span a'),
+      appFeedback: document.querySelector('.feedback'),
+      form: document.querySelector('.rss-form'),
+      input: document.querySelector('input[name="url"]'),
+      submit: document.querySelector('button[type="submit"]'),
+      feeds: document.querySelector('.feeds'),
+      posts: document.querySelector('.posts'),
+      modalTitle: document.querySelector('.modal-title'),
+      modalBody: document.querySelector('.modal-body'),
+      modalLinkPost: document.querySelector('a.full-article'),
+      modalClose: document.querySelector('button.close-btn'),
+    };
+
+    const watched = watchedState(state, elements);
+
+    elements.form.addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      const formData = new FormData(evt.target);
+      const url = formData.get('url');
+      updateValidationState(url, watched);
+      if (!watched.rssForm.valid) {
+        return;
+      }
+      watched.rssLoading.status = 'sending';
+      getNewFeed(url)
+        .then((data) => {
+          const { feed, posts } = data;
+          watched.feeds.unshift(feed);
+          watched.posts.unshift(...posts);
+          watched.rssLoading.status = 'finished';
+        })
+        .catch((err) => {
+          if (err.isRssError || err.isNetworkError) {
+            const mappingError = {
+              rss: 'rssForm.feedback.validRss',
+              network: 'rssForm.feedback.networkError',
+            };
+            watched.rssLoading.error = mappingError[err.type];
+          } else {
+            watched.rssLoading.error = 'rssForm.feedback.otherError';
+          }
+          watched.rssLoading.status = 'failed';
+        });
+    });
+
+    elements.posts.addEventListener('click', (evt) => {
+      if (evt.target.tagName.toLowerCase() !== 'button') {
+        return;
+      }
+      const currentId = evt.target.getAttribute('data-id');
+      const currentPost = watched.posts.find((post) => post.id === currentId);
+      watched.uiState.viewedPosts.add(currentId);
+      watched.uiState.modal.currentPost = currentPost;
+    });
+
+    watched.appStatus = 'init';
+  });
 };
