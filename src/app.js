@@ -51,9 +51,6 @@ const update = (watched) => {
     .then((newPosts) => {
       watched.posts.unshift(...newPosts);
     })
-    .catch((err) => {
-      throw err.message;
-    })
     .finally(() => {
       setTimeout(() => update(watched), 5000);
     });
