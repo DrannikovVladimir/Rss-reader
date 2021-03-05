@@ -125,11 +125,11 @@ export default () => {
           watched.rssLoading.status = 'finished';
         })
         .catch((err) => {
-          if (err.isRssError || err.isNetworkError) {
-            const mappingError = {
-              rss: 'rssForm.feedback.validRss',
-              network: 'rssForm.feedback.networkError',
-            };
+          const mappingError = {
+            rss: 'rssForm.feedback.validRss',
+            network: 'rssForm.feedback.networkError',
+          };
+          if (mappingError[err.type]) {
             watched.rssLoading.error = mappingError[err.type];
           } else {
             watched.rssLoading.error = 'rssForm.feedback.otherError';
