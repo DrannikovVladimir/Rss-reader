@@ -49,7 +49,7 @@ const getNewFeed = (link) => getData(link)
 const comparator = (item, post) => item.link === post.link
   && item.description === post.description;
 
-const updateFeed = (posts, feeds) => {
+const updateFeeds = (posts, feeds) => {
   const promises = feeds.map((feed) => {
     const { id, link } = feed;
     return getData(link)
@@ -67,5 +67,5 @@ const updateFeed = (posts, feeds) => {
 
 export {
   getNewFeed,
-  updateFeed,
+  updateFeeds,
 };

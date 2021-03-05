@@ -2,7 +2,7 @@ import i18next from 'i18next';
 import * as yup from 'yup';
 import resources from './locales';
 import watchedState from './view';
-import { getNewFeed, updateFeed } from './rss';
+import { getNewFeed, updateFeeds } from './rss';
 
 yup.setLocale({
   mixed: {
@@ -47,7 +47,7 @@ const updateValidationState = (url, watched) => {
 
 const update = (watched) => {
   const { posts, feeds } = watched;
-  updateFeed(posts, feeds)
+  updateFeeds(posts, feeds)
     .then((newPosts) => {
       watched.posts.unshift(...newPosts);
     })
