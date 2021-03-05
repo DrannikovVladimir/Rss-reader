@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import getRSS from './server';
+import getRSS from './response';
 import parse from './parser';
 
 const getData = (link) => getRSS(link).then((response) => {
