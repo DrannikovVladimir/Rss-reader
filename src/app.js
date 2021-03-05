@@ -139,7 +139,7 @@ export default () => {
     });
 
     elements.posts.addEventListener('click', (evt) => {
-      if (evt.target.tagName.toLowerCase() !== 'button') {
+      if (!evt.target.hasAttribute('data-id')) {
         return;
       }
       const currentId = evt.target.getAttribute('data-id');
