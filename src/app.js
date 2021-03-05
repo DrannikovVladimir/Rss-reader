@@ -81,9 +81,11 @@ export default () => {
     },
   };
 
+  const i18nextInstance = i18next.createInstance();
+
   update(state);
 
-  return i18next.init({
+  return i18nextInstance.init({
     lng: 'ru',
     resources,
   }).then(() => {
@@ -104,7 +106,7 @@ export default () => {
       modalClose: document.querySelector('button.close-btn'),
     };
 
-    const watched = watchedState(state, elements);
+    const watched = watchedState(state, elements, i18nextInstance);
 
     elements.form.addEventListener('submit', (evt) => {
       evt.preventDefault();

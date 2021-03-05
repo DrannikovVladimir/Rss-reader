@@ -8,7 +8,7 @@ import {
   updateUiLinks,
 } from './render';
 
-const rssLoadingHandler = (state, value, elements) => {
+const rssLoadingHandler = (state, value, elements, i18next) => {
   const { input, submit } = elements;
   const { rssLoading: { error } } = state;
   switch (value) {
@@ -17,13 +17,13 @@ const rssLoadingHandler = (state, value, elements) => {
       submit.setAttribute('disabled', 'disabled');
       break;
     case 'failed':
-      renderFeedback(error, elements);
+      renderFeedback(error, elements, i18next);
       input.classList.add('is-invalid');
       input.removeAttribute('readonly');
       submit.removeAttribute('disabled', 'disabled');
       break;
     case 'finished':
-      renderFeedback(null, elements);
+      renderFeedback(null, elements, i18next);
       input.classList.remove('is-invalid');
       input.removeAttribute('readonly');
       submit.removeAttribute('disabled', 'disabled');
@@ -33,7 +33,7 @@ const rssLoadingHandler = (state, value, elements) => {
   }
 };
 
-const formStateHandler = (state, value, elements) => {
+const formStateHandler = (state, value, elements, i18next) => {
   const { rssForm: { error } } = state;
   const { input, form } = elements;
   switch (value.status) {
@@ -42,7 +42,7 @@ const formStateHandler = (state, value, elements) => {
       form.reset();
       break;
     case 'failed':
-      renderFeedback(error, elements);
+      renderFeedback(error, elements, i18next);
       input.classList.add('is-invalid');
       break;
     default:
@@ -50,30 +50,29 @@ const formStateHandler = (state, value, elements) => {
   }
 };
 
-export default (state, elements) => {
+export default (state, elements, i18next) => {
   const watchedState = onChange(state, (path, value) => {
-    console.log(path, value);
     switch (path) {
       case 'rssLoading.status':
-        rssLoadingHandler(state, value, elements);
+        rssLoadingHandler(state, value, elements, i18next);
         break;
       case 'appStatus':
-        renderContentElements(elements);
+        renderContentElements(elements, i18next);
         break;
       case 'rssForm':
-        formStateHandler(state, value, elements);
+        formStateHandler(state, value, elements, i18next);
         break;
       case 'feeds':
-        renderFeeds(value, elements);
+        renderFeeds(value, elements, i18next);
         break;
       case 'posts':
-        renderPosts(state, value, elements);
+        renderPosts(state, value, elements, i18next);
         break;
       case 'uiState.modal.currentPost':
-        updateModal(value, elements);
+        updateModal(value, elements, i18next);
         break;
       case 'uiState.viewedPosts':
-        updateUiLinks(value, elements);
+        updateUiLinks(value, elements, i18next);
         break;
       default:
         break;

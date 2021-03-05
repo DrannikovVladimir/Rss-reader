@@ -1,6 +1,4 @@
-import i18next from 'i18next';
-
-const renderContentElements = (elements) => {
+const renderContentElements = (elements, i18next) => {
   const {
     appName,
     appLead,
@@ -18,7 +16,7 @@ const renderContentElements = (elements) => {
   appCopy.textContent = i18next.t('appCopy');
 };
 
-const updateModal = (post, elements) => {
+const updateModal = (post, elements, i18next) => {
   const {
     title,
     description,
@@ -48,7 +46,7 @@ const updateUiLinks = (viewedPosts, elements) => {
   });
 };
 
-const createButtonPreview = (id) => {
+const createButtonPreview = (id, i18next) => {
   const button = document.createElement('button');
   button.classList.add('btn', 'btn-primary', 'btn-sm', 'preview');
   button.setAttribute('type', 'button');
@@ -89,7 +87,7 @@ const createFeed = (feed) => {
   return itemFeed;
 };
 
-const renderPosts = (state, posts, elements) => {
+const renderPosts = (state, posts, elements, i18next) => {
   if (posts.length === 0) {
     return;
   }
@@ -112,7 +110,7 @@ const renderPosts = (state, posts, elements) => {
     );
     const { id, title, link } = post;
     const postLink = createPost(title, link, id);
-    const buttonPreview = createButtonPreview(id);
+    const buttonPreview = createButtonPreview(id, i18next);
 
     li.append(postLink, buttonPreview);
     postsList.appendChild(li);
@@ -121,7 +119,7 @@ const renderPosts = (state, posts, elements) => {
   elements.posts.appendChild(postsList);
 };
 
-const renderFeeds = (feeds, elements) => {
+const renderFeeds = (feeds, elements, i18next) => {
   const container = elements.feeds;
   container.innerHTML = '';
   const feedsTitle = document.createElement('h2');
@@ -139,7 +137,7 @@ const renderFeeds = (feeds, elements) => {
   elements.feeds.appendChild(feedsList);
 };
 
-const renderFeedback = (error, elements) => {
+const renderFeedback = (error, elements, i18next) => {
   const { appFeedback } = elements;
   appFeedback.classList.remove('text-danger', 'text-success');
   appFeedback.textContent = '';
