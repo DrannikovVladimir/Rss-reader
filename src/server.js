@@ -9,7 +9,6 @@ export default (link) => {
     .then((response) => response)
     .catch(() => {
       const error = new Error('Network error');
-      error.isNetworkError = true;
       error.type = 'network';
       throw error;
     });
