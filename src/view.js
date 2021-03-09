@@ -50,6 +50,16 @@ const formStateHandler = (state, value, elements, i18next) => {
   }
 };
 
+const appStateHandler = (status, elements, i18next) => {
+  switch (status) {
+    case 'init':
+      renderContentElements(elements, i18next);
+      break;
+    default:
+      throw new Error(`${status} is unknown App status!`);
+  }
+};
+
 export default (state, elements, i18next) => {
   const watchedState = onChange(state, (path, value) => {
     switch (path) {
@@ -57,7 +67,7 @@ export default (state, elements, i18next) => {
         rssLoadingHandler(state, value, elements, i18next);
         break;
       case 'appStatus':
-        renderContentElements(elements, i18next);
+        appStateHandler(value, elements, i18next);
         break;
       case 'rssForm':
         formStateHandler(state, value, elements, i18next);
