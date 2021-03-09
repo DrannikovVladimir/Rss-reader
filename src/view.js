@@ -9,7 +9,7 @@ import {
 } from './render';
 
 const rssLoadingHandler = (state, value, elements, i18next) => {
-  const { input, submit } = elements;
+  const { input, submit, form } = elements;
   const { rssLoading: { error } } = state;
   switch (value) {
     case 'sending':
@@ -27,6 +27,7 @@ const rssLoadingHandler = (state, value, elements, i18next) => {
       input.classList.remove('is-invalid');
       input.removeAttribute('readonly');
       submit.removeAttribute('disabled', 'disabled');
+      form.reset();
       break;
     default:
       throw new Error(`${value} is unknown state!`);
@@ -35,11 +36,10 @@ const rssLoadingHandler = (state, value, elements, i18next) => {
 
 const formStateHandler = (state, value, elements, i18next) => {
   const { rssForm: { error } } = state;
-  const { input, form } = elements;
+  const { input } = elements;
   switch (value.status) {
     case 'validated':
       input.classList.remove('is-invalid');
-      form.reset();
       break;
     case 'failed':
       renderFeedback(error, elements, i18next);
