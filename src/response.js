@@ -4,7 +4,7 @@ const PROXY = 'https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url
 
 export default (link) => {
   const url = new URL(`${PROXY}=${link}`);
-  return axios.get(url, { timeout: 5000 })
+  return axios.get(url.href, { timeout: 5000 })
     .then((response) => response)
     .catch(() => {
       const error = new Error('Network error');
