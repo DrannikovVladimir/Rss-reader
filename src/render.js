@@ -141,7 +141,9 @@ const renderFeedback = (error, elements, i18next) => {
   const { appFeedback } = elements;
   appFeedback.classList.remove('text-danger', 'text-success');
   appFeedback.textContent = '';
-  const feedbackText = i18next.t(error) || i18next.t('rssForm.feedback.success');
+  console.log(error);
+  const feedbackText = error ? i18next.t(error) : i18next.t('rssForm.feedback.success');
+  console.log(feedbackText);
   const feedbackColor = error ? 'text-danger' : 'text-success';
   appFeedback.classList.add(feedbackColor);
   appFeedback.textContent = feedbackText.trim();
