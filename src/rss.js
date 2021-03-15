@@ -1,8 +1,23 @@
+import axios from 'axios';
 import _ from 'lodash';
-import getRSS from './response';
 import parse from './parser';
 
-const getData = (link) => getRSS(link).then((response) => {
+const PROXY = 'https://hexlet-allorigins.herokuapp.com/get?';
+
+const getContents = (link) => {
+  const url = new URL(PROXY);
+  url.searchParams.set('disableCache', 'true');
+  url.searchParams.set('url', link);
+  return axios.get(url.href, { timeout: 5000 })
+    .then((response) => response)
+    .catch((err) => {
+      const error = new Error(err.message);
+      error.type = 'network';
+      throw error;
+    });
+};
+
+const getData = (link) => getContents(link).then((response) => {
   const { data: { contents } } = response;
   return parse(contents);
 });
