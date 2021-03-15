@@ -8,8 +8,8 @@ export default (link) => {
   url.searchParams.set('url', link);
   return axios.get(url.href, { timeout: 5000 })
     .then((response) => response)
-    .catch(() => {
-      const error = new Error('Network error');
+    .catch((err) => {
+      const error = new Error(err.message);
       error.type = 'network';
       throw error;
     });
