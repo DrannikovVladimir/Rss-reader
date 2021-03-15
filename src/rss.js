@@ -17,10 +17,8 @@ const getContents = (link) => {
     });
 };
 
-const getData = (link) => getContents(link).then((response) => {
-  const { data: { contents } } = response;
-  return parse(contents);
-});
+const getData = (link) => getContents(link)
+  .then(({ data: { contents } }) => parse(contents));
 
 const makeFeed = (feed, link) => {
   const {
@@ -73,7 +71,8 @@ const updateFeeds = (posts, feeds) => {
         const existedPosts = posts.filter((post) => post.feedId === id);
         const newPostsLinks = _.differenceWith(list, existedPosts, comparator);
         return makePosts(id, newPostsLinks);
-      });
+      })
+      .catch((err) => ({ result: 'error', error: err }));
   });
 
   const promise = Promise.all(promises).then((data) => _.flatten(data));
