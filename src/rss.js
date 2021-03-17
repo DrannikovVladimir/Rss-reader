@@ -2,11 +2,16 @@ import axios from 'axios';
 import _ from 'lodash';
 import parse from './parser';
 
-const getContents = (link) => {
+const createUrl = (link) => {
   const PROXY = 'https://hexlet-allorigins.herokuapp.com/get?';
   const url = new URL(PROXY);
   url.searchParams.set('disableCache', 'true');
   url.searchParams.set('url', link);
+  return url;
+};
+
+const getContents = (link) => {
+  const url = createUrl(link);
   return axios.get(url.href, { timeout: 5000 })
     .catch((err) => {
       const error = new Error(err.message);
