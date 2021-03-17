@@ -4,16 +4,6 @@ import resources from './locales';
 import watchedState from './view';
 import { getNewFeed, updateFeeds } from './rss';
 
-yup.setLocale({
-  mixed: {
-    required: 'rssForm.feedback.required',
-    notOneOf: 'rssForm.feedback.double',
-  },
-  string: {
-    url: 'rssForm.feedback.url',
-  },
-});
-
 const validateSync = (url, feeds) => {
   const links = feeds.map((feed) => feed.link);
   const schema = yup.string().required().url().notOneOf(links);
@@ -79,6 +69,16 @@ export default () => {
   };
 
   const i18nextInstance = i18next.createInstance();
+
+  yup.setLocale({
+    mixed: {
+      required: 'rssForm.feedback.required',
+      notOneOf: 'rssForm.feedback.double',
+    },
+    string: {
+      url: 'rssForm.feedback.url',
+    },
+  });
 
   update(state);
 
