@@ -2,14 +2,12 @@ import axios from 'axios';
 import _ from 'lodash';
 import parse from './parser';
 
-const PROXY = 'https://hexlet-allorigins.herokuapp.com/get?';
-
 const getContents = (link) => {
+  const PROXY = 'https://hexlet-allorigins.herokuapp.com/get?';
   const url = new URL(PROXY);
   url.searchParams.set('disableCache', 'true');
   url.searchParams.set('url', link);
   return axios.get(url.href, { timeout: 5000 })
-    .then((response) => response)
     .catch((err) => {
       const error = new Error(err.message);
       error.type = 'network';
