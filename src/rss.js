@@ -7,7 +7,7 @@ const addProxy = (link) => {
   const url = new URL(PROXY);
   url.searchParams.set('disableCache', 'true');
   url.searchParams.set('url', link);
-  return url;
+  return url.href;
 };
 
 const getContents = (link) => axios.get(addProxy(link), { timeout: 5000 })
