@@ -2,7 +2,7 @@ import axios from 'axios';
 import _ from 'lodash';
 import parse from './parser';
 
-const createUrl = (link) => {
+const addProxy = (link) => {
   const PROXY = 'https://hexlet-allorigins.herokuapp.com/get?';
   const url = new URL(PROXY);
   url.searchParams.set('disableCache', 'true');
@@ -10,15 +10,12 @@ const createUrl = (link) => {
   return url;
 };
 
-const getContents = (link) => {
-  const url = createUrl(link);
-  return axios.get(url.href, { timeout: 5000 })
-    .catch((err) => {
-      const error = new Error(err.message);
-      error.type = 'network';
-      throw error;
-    });
-};
+const getContents = (link) => axios.get(addProxy(link), { timeout: 5000 })
+  .catch((err) => {
+    const error = new Error(err.message);
+    error.type = 'network';
+    throw error;
+  });
 
 const getData = (link) => getContents(link)
   .then(({ data: { contents } }) => parse(contents));
